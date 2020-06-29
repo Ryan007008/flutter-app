@@ -1,0 +1,138 @@
+name: flutterapp
+description: A new Flutter application.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^0.1.3
+  flutter_spinkit: ^4.1.2
+  path_provider: ^1.6.11
+  sqflite: ^1.3.1
+  path: ^1.7.0
+  url_launcher: ^5.4.11
+  url_launcher_web: ^0.1.0
+  shared_preferences: ^0.5.7+3
+  dio: ^3.0.9
+  archive: ^2.0.13
+  webview_flutter: ^0.3.22+1
+  cached_network_image: ^2.2.0+1
+  flutter_svg: ^0.18.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - images/miniapp/index.html
+    - images/miniapp/vendor.js
+    - images/miniapp/app.js
+    - images/miniapp/wallpaper.js
+    - images/miniapp/index_wallpaper.html
+    # assets-generator-begin
+    # images/*
+    - images/ic_tab_daily_highlight.png
+    - images/ic_carousel_new.png
+    - images/pic_splash.png
+    - images/daily_blur.png
+    - images/ic_special_first_item.png
+    - images/ic_carousel_alice.png
+    - images/ic_tab_news_grey.png
+    - images/ic_tab_mywork_highlight.png
+    - images/pic_empty_mywork.png
+    - images/ic_tab_daily_grey.png
+    - images/ic_badge_special.png
+    - images/ic_carousel_facebook.png
+    - images/ic_set_moon.png
+    - images/ic_set_vibra_on.png
+    - images/ic_set_rate.png
+    - images/ic_set_filter.png
+    - images/ic_badge_new.png
+    - images/ic_badge_video.png
+    - images/ic_set_subscri.png
+    - images/ic_badge_done.png
+    - images/ic_all_set.png
+    - images/ic_achievement.png
+    - images/ic_set_alice.png
+    - images/ic_badge_wallpaper.png
+    - images/ic_carousel_sub.png
+    - images/ic_tab_mywork_grey.png
+    - images/ic_badge_jigsaw.png
+    - images/ic_badge_glitter.png
+    - images/daliy_watermark.png
+    - images/ic_set_restore.png
+    - images/ic_set_vibra_off.png
+    - images/ic_tab_news_highlight.png
+    - images/ic_set.png
+    - images/ic_hint.png
+    - images/ic_set_sun.png
+    - images/ic_tab_gallery_highlight.png
+    - images/ic_badge_ads.png
+    - images/ic_tab_gallery_grey.png
+    - images/pic_cell_placeholder_wallpaper.png
+    - images/ic_action_back.png
+    - images/ic_set_dark.png
+    - images/ic_set_conceal_on.png
+    - images/daily_gift.png
+    - images/ic_set_fb.png
+    - images/pic_cell_placeholder.png
+    # assets-generator-end
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
