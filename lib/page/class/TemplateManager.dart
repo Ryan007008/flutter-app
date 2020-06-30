@@ -116,7 +116,6 @@ class TemplateManager {
       var response = await request.close();
       print(response.statusCode.toString());
       if (response.statusCode == HttpStatus.ok) {
-        print('header: ' + response.headers.toString());
         preferences.setString('eTag', response.headers.value('etag'));
         var json = await response.transform(utf8.decoder).join();
         var p = jsonDecode(json);

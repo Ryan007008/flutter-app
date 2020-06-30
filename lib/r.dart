@@ -73,6 +73,8 @@ class R {
   static final String imagesIcTabGalleryHighlight = 'images/ic_tab_gallery_highlight.png';
   /// ![](http://127.0.0.1:9002/images/ic_badge_ads.png)
   static final String imagesIcBadgeAds = 'images/ic_badge_ads.png';
+  /// ![](http://127.0.0.1:9002/images/ic_daily_item_corner.png)
+  static final String imagesIcDailyItemCorner = 'images/ic_daily_item_corner.png';
   /// ![](http://127.0.0.1:9002/images/ic_tab_gallery_grey.png)
   static final String imagesIcTabGalleryGrey = 'images/ic_tab_gallery_grey.png';
   /// ![](http://127.0.0.1:9002/images/pic_cell_placeholder_wallpaper.png)

@@ -55,6 +55,7 @@ class DailyHeaderState extends State<DailyHeader>
           width: 340,
         ),
         DecoratedBox(
+          position: DecorationPosition.foreground,
           child: Container(
             width: 238,
             height: 238,

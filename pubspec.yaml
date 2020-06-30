@@ -102,6 +102,7 @@ flutter:
     - images/ic_set_sun.png
     - images/ic_tab_gallery_highlight.png
     - images/ic_badge_ads.png
+    - images/ic_daily_item_corner.png
     - images/ic_tab_gallery_grey.png
     - images/pic_cell_placeholder_wallpaper.png
     - images/ic_action_back.png

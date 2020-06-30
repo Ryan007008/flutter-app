@@ -52,7 +52,9 @@ class CategoryListState extends State<CategoryList> {
   Widget build(BuildContext context) {
     // TODO: implement build
     var imageWidth = (MediaQuery.of(context).size.width - 30) / 2;
-    var imageHeight = widget.categoryId == 'wallpaper' ? imageWidth / (478 / 850) : imageWidth ;
+    var imageHeight = widget.categoryId == 'wallpaper'
+        ? imageWidth / (478 / 850)
+        : imageWidth;
     var paddingHeight = MediaQuery.of(context).size.width / (346 / 152) + 48;
     return GridView.builder(
         key: Key(widget.categoryId),
@@ -61,7 +63,8 @@ class CategoryListState extends State<CategoryList> {
         cacheExtent: 2.0,
         padding: EdgeInsets.only(top: paddingHeight),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, childAspectRatio: widget.categoryId == 'wallpaper' ? 478 / 850 : 1),
+            crossAxisCount: 2,
+            childAspectRatio: widget.categoryId == 'wallpaper' ? 478 / 850 : 1),
         itemCount: widget.data.length,
         controller: _listController,
         itemBuilder: (context, index) {
@@ -85,26 +88,21 @@ class CategoryListState extends State<CategoryList> {
           return GestureDetector(
             onTap: () => widget.onTap(template.id, widget.categoryId),
             child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)
+              ),
               shadowColor: Color(0xFF5D5572),
-              semanticContainer: false,
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Container(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
-                      child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        width: imageWidth,
-                        height: imageHeight,
-                        imageUrl: template.url,
-                        placeholder: (context, url) => SpinKitCircle(
-                          color: Color(0xFFFD6F6F),
-                        ),
-                      ),
-                    ),
+                  CachedNetworkImage(
+                    fit: BoxFit.cover,
                     width: imageWidth,
                     height: imageHeight,
+                    imageUrl: template.url,
+                    placeholder: (context, url) => SpinKitCircle(
+                      color: Color(0xFFFD6F6F),
+                    ),
                   ),
                   Positioned(
                     left: 10.0,

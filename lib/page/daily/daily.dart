@@ -104,14 +104,15 @@ class DailyListState extends State<DailyList>
           var day =
               DateTime.fromMillisecondsSinceEpoch(template.openDate * 1000).day;
           return GestureDetector(
-            onTap: () => onTapItem(template.id, ''),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: CachedNetworkImage(
+              onTap: () => onTapItem(template.id, ''),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+                shadowColor: Color(0xFF5D5572),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CachedNetworkImage(
                       fit: BoxFit.contain,
                       width: imageWidth,
                       height: imageWidth,
@@ -120,33 +121,33 @@ class DailyListState extends State<DailyList>
                         color: Color(0xFFFD6F6F),
                       ),
                     ),
-                  ),
-                  width: imageWidth,
-                  height: imageWidth,
-//                padding: const EdgeInsets.all(5.0),
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: 33,
+                        height: 28,
+//                        decoration: BoxDecoration(
+//                            borderRadius: BorderRadius.only(
+//                                bottomRight: Radius.circular(10.0))),
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(10.0)),
+                              child: Image.asset(R.imagesIcDailyItemCorner),
+                            ),
+                            Text('$day',
+                                style: TextStyle(
+                                    color: Color(0xFF7A7B85), fontSize: 16)),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                Positioned(
-                  right: 7.5,
-                  bottom: 7.5,
-                  child: Container(
-                    width: 33,
-                    height: 28,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border.all(color: Colors.black26, width: 0.5),
-                        borderRadius: BorderRadius.only(
-                            bottomRight: Radius.circular(10.0),
-                            topLeft: Radius.circular(10.0))),
-                    child: Center(
-                      child: Text('$day',
-                          style:
-                          TextStyle(color: Color(0xFF7A7B85), fontSize: 16)),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          );
+              ));
         });
   }
 
@@ -155,11 +156,9 @@ class DailyListState extends State<DailyList>
     Template template = await manager.getTemplateById(id);
     if (template != null) {
       await manager.download(id, template.hash);
-      Navigator.push(context, MaterialPageRoute(
-          builder: (context) {
-            return PaintingPage(id, categoryId);
-          }
-      ));
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return PaintingPage(id, categoryId);
+      }));
     }
   }
 
