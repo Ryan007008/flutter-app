@@ -79,30 +79,6 @@ class PaintingPageState extends State<PaintingPage> {
           'file:///android_asset/flutter_assets/images/dist/index_wallpaper.html?bgcolor=ffffff';
     }
 
-    if (loading) {
-      return Scaffold(
-          appBar: AppBar(
-              backgroundColor: Colors.white,
-              leading: GestureDetector(
-                onTap: () {
-                  flutterWebViewPlugin.hide();
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  height: 32,
-                  child: Image.asset(R.imagesIcActionBack),
-                ),
-              )),
-          body: SafeArea(
-            child: Center(
-              child: SpinKitCircle(
-                color: Color(0xFFFD6F6F),
-              ),
-            ),
-          ));
-    }
-
     return WebviewScaffold(
       url: url,
       withZoom: true,
@@ -110,7 +86,7 @@ class PaintingPageState extends State<PaintingPage> {
       withLocalStorage: true,
       withJavascript: true,
       allowFileURLs: true,
-      hidden: true,
+      hidden: loading,
       scrollBar: false,
       javascriptChannels: <JavascriptChannel>[
         JavascriptChannel(
@@ -124,7 +100,6 @@ class PaintingPageState extends State<PaintingPage> {
         backgroundColor: Colors.white,
         leading: GestureDetector(
           onTap: () {
-            flutterWebViewPlugin.hide();
             Navigator.pop(context);
           },
           child: Container(
@@ -180,6 +155,20 @@ class PaintingPageState extends State<PaintingPage> {
         var pathIds = payload['colorState']['pathIds'] as List;
         saveStep(colorVal, pathIds);
         break;
+      case 'TOAPP_LONG_TAP':
+        var colorIdx = payload['colorState']['colorIdx'];
+        setState(() {
+          paletteSelected = colorIdx;
+        });
+        var msg = {
+          "type": "ACT_RECOVERY_STATE",
+          "payload": {
+            "colorState": {"colorIdx": colorIdx, "colorVal": paletteColors[colorIdx]},
+            "steps": []
+          }
+        };
+        sentMsgToWeb(msg);
+        break;
     }
   }
 
@@ -192,45 +181,6 @@ class PaintingPageState extends State<PaintingPage> {
       }
     });
   }
-
-  Widget getTitleBar() => Container(
-        height: 44,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                height: 32,
-                child: Image.asset(R.imagesIcActionBack),
-              ),
-            ),
-            Expanded(
-              child: Center(
-                child: Text('AAA'),
-              ),
-            ),
-            GestureDetector(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(22.0),
-                    border: Border.all(color: Color(0xFFFFEDED), width: 2.0)),
-                child: Container(
-                  height: 44.0,
-                  width: 44.0,
-                  child: Center(
-                    child:
-                        Text('0%', style: TextStyle(color: Color(0xFFFF7F7F))),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
 
   Widget getHint() => GestureDetector(
         child: Stack(
