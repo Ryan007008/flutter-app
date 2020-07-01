@@ -178,7 +178,7 @@ class LibraryState extends State<LibraryPage>
         loading = false;
       });
       Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return PaintingPage(id, categoryId);
+        return PaintingPage(id, categoryId, template.tags);
       }));
     }
   }

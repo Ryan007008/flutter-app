@@ -40,6 +40,7 @@ dependencies:
   webview_flutter: ^0.3.22+1
   cached_network_image: ^2.2.0+1
   flutter_svg: ^0.18.0
+  flutter_webview_plugin: ^0.3.11
 
 dev_dependencies:
   flutter_test:
@@ -58,11 +59,11 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - images/miniapp/index.html
-    - images/miniapp/vendor.js
-    - images/miniapp/app.js
-    - images/miniapp/wallpaper.js
-    - images/miniapp/index_wallpaper.html
+    - images/dist/index.html
+    - images/dist/vendor.js
+    - images/dist/app.js
+    - images/dist/wallpaper.js
+    - images/dist/index_wallpaper.html
     # assets-generator-begin
     # images/*
     - images/ic_tab_daily_highlight.png

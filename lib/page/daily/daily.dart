@@ -127,9 +127,6 @@ class DailyListState extends State<DailyList>
                       child: Container(
                         width: 33,
                         height: 28,
-//                        decoration: BoxDecoration(
-//                            borderRadius: BorderRadius.only(
-//                                bottomRight: Radius.circular(10.0))),
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
@@ -157,7 +154,7 @@ class DailyListState extends State<DailyList>
     if (template != null) {
       await manager.download(id, template.hash);
       Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return PaintingPage(id, categoryId);
+        return PaintingPage(id, categoryId, template.tags);
       }));
     }
   }

@@ -1,21 +1,18 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:flutterapp/page/class/TemplateManager.dart';
 import 'package:flutterapp/r.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class PaintingPage extends StatefulWidget {
   final String id;
   final String categoryId;
+  final String tags;
 
-  const PaintingPage(this.id, this.categoryId);
+  const PaintingPage(this.id, this.categoryId, this.tags);
 
   @override
   State<StatefulWidget> createState() {
@@ -26,13 +23,15 @@ class PaintingPage extends StatefulWidget {
 
 class PaintingPageState extends State<PaintingPage> {
   TemplateManager manager = TemplateManager();
-  WebViewController _webController;
   int hintCount = 0;
   List<String> paletteColors = [];
   Map<String, dynamic> colorGroup;
+  Map<String, Set<String>> fillColors = new Map();
   int paletteSelected = 0;
   File svgPath;
+  File imagePath;
   bool loading = true;
+  final flutterWebViewPlugin = FlutterWebviewPlugin();
 
   @override
   void initState() {
@@ -44,75 +43,154 @@ class PaintingPageState extends State<PaintingPage> {
       setState(() {
         paletteColors = data['palette'].cast<String>().toList();
         colorGroup = data['colorGroup'];
+        print('colorGroup: $colorGroup');
         svgPath = File('$value/${widget.id}.svg');
+        imagePath = File('$value/${widget.id}_tear_film.png');
         loading = false;
       });
     });
+    flutterWebViewPlugin.onStateChanged.listen((event) {
+      if (event.type == WebViewState.finishLoad) {
+        flutterWebViewPlugin.evalJavascript(
+            'TintageController.setSvgUrl("${svgPath.path}");true;');
+        print('imagePath: ${imagePath.existsSync()}');
+        if (imagePath.existsSync()) {
+          flutterWebViewPlugin.evalJavascript(
+              'TintageController.setImageUrl("${imagePath.path}");true;');
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    flutterWebViewPlugin.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     String url =
-        'file:///android_asset/flutter_assets/images/miniapp/index.html?bgcolor=ffffff';
-    if (widget.categoryId == 'wallpaper') {
+        'file:///android_asset/flutter_assets/images/dist/index.html?bgcolor=ffffff';
+    if (widget.tags.contains('wallpaper')) {
       url =
-          'file:///android_asset/flutter_assets/images/miniapp/index_wallpaper.html?bgcolor=ffffff';
+          'file:///android_asset/flutter_assets/images/dist/index_wallpaper.html?bgcolor=ffffff';
     }
 
     if (loading) {
       return Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: [
-              getTitleBar(),
-              Expanded(
-                child: Center(
-                  child: SpinKitCircle(
-                    color: Color(0xFFFD6F6F),
-                  ),
+          appBar: AppBar(
+              backgroundColor: Colors.white,
+              leading: GestureDetector(
+                onTap: () {
+                  flutterWebViewPlugin.hide();
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  height: 32,
+                  child: Image.asset(R.imagesIcActionBack),
                 ),
-              )
-            ],
+              )),
+          body: SafeArea(
+            child: Center(
+              child: SpinKitCircle(
+                color: Color(0xFFFD6F6F),
+              ),
+            ),
+          ));
+    }
+
+    return WebviewScaffold(
+      url: url,
+      withZoom: true,
+      withLocalUrl: true,
+      withLocalStorage: true,
+      withJavascript: true,
+      allowFileURLs: true,
+      hidden: true,
+      scrollBar: false,
+      javascriptChannels: <JavascriptChannel>[
+        JavascriptChannel(
+            name: 'ReactNativeWebView',
+            onMessageReceived: (JavascriptMessage message) {
+              print('message: ${message.message}');
+              onRecvWebviewMsg(message);
+            })
+      ].toSet(),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: GestureDetector(
+          onTap: () {
+            flutterWebViewPlugin.hide();
+            Navigator.pop(context);
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            height: 32,
+            child: Image.asset(R.imagesIcActionBack),
           ),
         ),
-      );
-    }
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            getTitleBar(),
-            Expanded(
+        actions: [
+          Center(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(22.0),
+                  border: Border.all(color: Color(0xFFFFEDED), width: 2.0)),
               child: Container(
-                color: Colors.white,
-                child: WebView(
-                  initialUrl: url,
-                  javascriptMode: JavascriptMode.unrestricted,
-                  onWebViewCreated: (webController) {
-                    _webController = webController;
-                  },
-                  onPageFinished: (String url) {
-                    print('Page finished loading: $url');
-                    manager.getDownloadPath().then((path) {
-                      var svgFile = File('$path/${widget.id}.svg');
-                      _webController.evaluateJavascript(
-                          'TintageController.setSvgUrl("${svgFile.path}");true;');
-                      var imgFile = File('$path/${widget.id}_tear_film.png');
-                      if (imgFile.existsSync()) {
-                        _webController.evaluateJavascript(
-                            'TintageController.setImageUrl("${imgFile.path}");true;');
-                      }
-                    });
-                  },
+                height: 44.0,
+                width: 44.0,
+                child: Center(
+                  child: Text('0%', style: TextStyle(color: Color(0xFFFF7F7F))),
                 ),
               ),
             ),
-            getPaletteColors()
-          ],
-        ),
+          )
+        ],
       ),
+      bottomNavigationBar: getPaletteColors(),
     );
+  }
+
+  void sentMsgToWeb(dynamic msg) {
+    var m = jsonEncode(msg);
+    print('msg: $m');
+    flutterWebViewPlugin.evalJavascript('window.postMessage($m, "*");true;');
+  }
+
+  void onRecvWebviewMsg(JavascriptMessage message) {
+    var msg = jsonDecode(message.message);
+    var type = msg['type'];
+    var payload = msg['payload'];
+    switch (type) {
+      case 'ACT_ONINJECTED_SVG':
+        var msg = {
+          "type": "ACT_RECOVERY_STATE",
+          "payload": {
+            "colorState": {"colorIdx": 0, "colorVal": paletteColors[0]},
+            "steps": []
+          }
+        };
+        sentMsgToWeb(msg);
+        break;
+      case 'ACT_ONDRAWED_COLOR':
+        var colorVal = payload['colorState']['colorVal'];
+        var pathIds = payload['colorState']['pathIds'] as List;
+        saveStep(colorVal, pathIds);
+        break;
+    }
+  }
+
+  void saveStep(String colorVal, List<String> pathIds) {
+    setState(() {
+      if (fillColors.containsKey(colorVal)) {
+        fillColors[colorVal].addAll(pathIds);
+      } else {
+        fillColors[colorVal] = pathIds.toSet();
+      }
+    });
   }
 
   Widget getTitleBar() => Container(
@@ -212,11 +290,24 @@ class PaintingPageState extends State<PaintingPage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: paletteColors.length,
                   itemBuilder: (context, index) {
+                    var color = paletteColors[index];
+                    var allIds = (colorGroup[color] as List).length;
+                    var finishedIds = fillColors[color]?.length;
+                    print('allIds: $allIds');
+                    print('finishedIds: $finishedIds');
                     return GestureDetector(
                       onTap: () {
                         setState(() {
                           paletteSelected = index;
                         });
+                        var msg = {
+                          "type": "ACT_COLOR_STATE",
+                          "payload": {
+                            "colorIdx": index,
+                            "colorVal": color,
+                          },
+                        };
+                        sentMsgToWeb(msg);
                       },
                       child: Stack(
                         alignment: Alignment.center,
@@ -228,8 +319,7 @@ class PaintingPageState extends State<PaintingPage> {
                               backgroundColor: Color(0xFFCCCCCC),
                               valueColor:
                                   AlwaysStoppedAnimation(Color(0xFF0AE682)),
-//                          valueColor: Color(0xFF0AE682),
-                              value: 0.5,
+                              value: (finishedIds ?? 0 / allIds),
                               strokeWidth: 5,
                             ),
                           ),

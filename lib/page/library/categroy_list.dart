@@ -89,8 +89,7 @@ class CategoryListState extends State<CategoryList> {
             onTap: () => widget.onTap(template.id, widget.categoryId),
             child: Card(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)
-              ),
+                  borderRadius: BorderRadius.circular(10.0)),
               shadowColor: Color(0xFF5D5572),
               child: Stack(
                 alignment: Alignment.center,
