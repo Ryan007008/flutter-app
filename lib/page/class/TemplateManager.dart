@@ -226,4 +226,14 @@ class TemplateManager {
     download.createSync();
     return download.path;
   }
+
+  Future<String> getSaveImagePath() async {
+    Directory directory = await getApplicationDocumentsDirectory();
+    Directory save = Directory('${directory.path}/save');
+    if (save.existsSync()) {
+      return save.path;
+    }
+    save.createSync();
+    return save.path;
+  }
 }

@@ -17,6 +17,8 @@ class R {
   static final String imagesIcTabMyworkHighlight = 'images/ic_tab_mywork_highlight.png';
   /// ![](http://127.0.0.1:9002/images/pic_empty_mywork.png)
   static final String imagesPicEmptyMywork = 'images/pic_empty_mywork.png';
+  /// ![](http://127.0.0.1:9002/images/ic_share_share.png)
+  static final String imagesIcShareShare = 'images/ic_share_share.png';
   /// ![](http://127.0.0.1:9002/images/ic_tab_daily_grey.png)
   static final String imagesIcTabDailyGrey = 'images/ic_tab_daily_grey.png';
   /// ![](http://127.0.0.1:9002/images/ic_badge_special.png)
@@ -47,12 +49,16 @@ class R {
   static final String imagesIcSetAlice = 'images/ic_set_alice.png';
   /// ![](http://127.0.0.1:9002/images/ic_badge_wallpaper.png)
   static final String imagesIcBadgeWallpaper = 'images/ic_badge_wallpaper.png';
+  /// ![](http://127.0.0.1:9002/images/ic_share_save.png)
+  static final String imagesIcShareSave = 'images/ic_share_save.png';
   /// ![](http://127.0.0.1:9002/images/ic_carousel_sub.png)
   static final String imagesIcCarouselSub = 'images/ic_carousel_sub.png';
   /// ![](http://127.0.0.1:9002/images/ic_tab_mywork_grey.png)
   static final String imagesIcTabMyworkGrey = 'images/ic_tab_mywork_grey.png';
   /// ![](http://127.0.0.1:9002/images/ic_badge_jigsaw.png)
   static final String imagesIcBadgeJigsaw = 'images/ic_badge_jigsaw.png';
+  /// ![](http://127.0.0.1:9002/images/ic_share_instagram.png)
+  static final String imagesIcShareInstagram = 'images/ic_share_instagram.png';
   /// ![](http://127.0.0.1:9002/images/ic_badge_glitter.png)
   static final String imagesIcBadgeGlitter = 'images/ic_badge_glitter.png';
   /// ![](http://127.0.0.1:9002/images/daliy_watermark.png)

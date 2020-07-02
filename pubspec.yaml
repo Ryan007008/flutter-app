@@ -75,6 +75,7 @@ flutter:
     - images/ic_tab_news_grey.png
     - images/ic_tab_mywork_highlight.png
     - images/pic_empty_mywork.png
+    - images/ic_share_share.png
     - images/ic_tab_daily_grey.png
     - images/ic_badge_special.png
     - images/ic_carousel_facebook.png
@@ -90,9 +91,11 @@ flutter:
     - images/ic_achievement.png
     - images/ic_set_alice.png
     - images/ic_badge_wallpaper.png
+    - images/ic_share_save.png
     - images/ic_carousel_sub.png
     - images/ic_tab_mywork_grey.png
     - images/ic_badge_jigsaw.png
+    - images/ic_share_instagram.png
     - images/ic_badge_glitter.png
     - images/daliy_watermark.png
     - images/ic_set_restore.png

@@ -1,10 +1,12 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:flutterapp/page/class/TemplateManager.dart';
+import 'package:flutterapp/page/paint/palette_color.dart';
+import 'package:flutterapp/page/share/share.dart';
 import 'package:flutterapp/r.dart';
 
 class PaintingPage extends StatefulWidget {
@@ -26,7 +28,7 @@ class PaintingPageState extends State<PaintingPage> {
   int hintCount = 0;
   List<String> paletteColors = [];
   Map<String, dynamic> colorGroup;
-  Map<String, Set<String>> fillColors = new Map();
+  Map<String, Set<String>> fillColors = new LinkedHashMap();
   int paletteSelected = 0;
   File svgPath;
   File imagePath;
@@ -41,12 +43,14 @@ class PaintingPageState extends State<PaintingPage> {
       var fileJson = File('$value/${widget.id}.json');
       var data = jsonDecode(fileJson.readAsStringSync());
       setState(() {
-        paletteColors = data['palette'].cast<String>().toList();
+        paletteColors = List<String>.from(data['palette']);
         colorGroup = data['colorGroup'];
-        print('colorGroup: $colorGroup');
         svgPath = File('$value/${widget.id}.svg');
         imagePath = File('$value/${widget.id}_tear_film.png');
         loading = false;
+        paletteColors.forEach((element) {
+          fillColors[element] = Set<String>.from([]);
+        });
       });
     });
     flutterWebViewPlugin.onStateChanged.listen((event) {
@@ -131,7 +135,6 @@ class PaintingPageState extends State<PaintingPage> {
 
   void sentMsgToWeb(dynamic msg) {
     var m = jsonEncode(msg);
-    print('msg: $m');
     flutterWebViewPlugin.evalJavascript('window.postMessage($m, "*");true;');
   }
 
@@ -152,7 +155,7 @@ class PaintingPageState extends State<PaintingPage> {
         break;
       case 'ACT_ONDRAWED_COLOR':
         var colorVal = payload['colorState']['colorVal'];
-        var pathIds = payload['colorState']['pathIds'] as List;
+        var pathIds = payload['pathIds'] as List;
         saveStep(colorVal, pathIds);
         break;
       case 'TOAPP_LONG_TAP':
@@ -163,23 +166,72 @@ class PaintingPageState extends State<PaintingPage> {
         var msg = {
           "type": "ACT_RECOVERY_STATE",
           "payload": {
-            "colorState": {"colorIdx": colorIdx, "colorVal": paletteColors[colorIdx]},
+            "colorState": {
+              "colorIdx": colorIdx,
+              "colorVal": paletteColors[colorIdx]
+            },
             "steps": []
           }
         };
         sentMsgToWeb(msg);
         break;
+      case 'ACT_ONEXPORT_IMAGE':
+        manager.getSaveImagePath().then((value) {
+          var file = File('$value/${widget.id}.png');
+          if (!file.existsSync()) {
+            file.createSync();
+          }
+          var content = (payload['content'] as String)
+              .substring('data:image/png;base64,'.length);
+          file.writeAsBytesSync(base64.decode(content));
+          flutterWebViewPlugin.close();
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return SharePage(file.path);
+          }));
+        });
+
+        break;
     }
   }
 
-  void saveStep(String colorVal, List<String> pathIds) {
+  void findNext() {
+    var fillIds = fillColors.values.toList()[paletteSelected].length;
+    var allIds = List.from(colorGroup.values.toList()[paletteSelected]).length;
+    print('fff: $fillIds');
+    if (fillIds == allIds) {
+      print('paletteSelected111: $paletteSelected');
+      setState(() {
+        paletteSelected++;
+      });
+      print('paletteSelected: $paletteSelected');
+      if (paletteSelected > paletteColors.length - 1) {
+        var msg = {
+          "type": "ACT_EXPORT_CANVAS",
+          "payload": {"contentType": "base64png", "postAction": "finish"}
+        };
+        sentMsgToWeb(msg);
+        return;
+      }
+      var msg = {
+        "type": "ACT_COLOR_STATE",
+        "payload": {
+          "colorIdx": paletteSelected,
+          "colorVal": paletteColors[paletteSelected],
+        },
+      };
+      sentMsgToWeb(msg);
+    }
+  }
+
+  void saveStep(String colorVal, List pathIds) {
     setState(() {
       if (fillColors.containsKey(colorVal)) {
-        fillColors[colorVal].addAll(pathIds);
+        fillColors[colorVal].addAll(Set.from(pathIds));
       } else {
-        fillColors[colorVal] = pathIds.toSet();
+        fillColors[colorVal] = Set.from(pathIds);
       }
     });
+    findNext();
   }
 
   Widget getHint() => GestureDetector(
@@ -235,115 +287,25 @@ class PaintingPageState extends State<PaintingPage> {
         children: [
           getHint(),
           Expanded(
-            child: Container(
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: paletteColors.length,
-                  itemBuilder: (context, index) {
-                    var color = paletteColors[index];
-                    var allIds = (colorGroup[color] as List).length;
-                    var finishedIds = fillColors[color]?.length;
-                    print('allIds: $allIds');
-                    print('finishedIds: $finishedIds');
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          paletteSelected = index;
-                        });
-                        var msg = {
-                          "type": "ACT_COLOR_STATE",
-                          "payload": {
-                            "colorIdx": index,
-                            "colorVal": color,
-                          },
-                        };
-                        sentMsgToWeb(msg);
-                      },
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          SizedBox(
-                            width: paletteSelected == index ? 55 : 40,
-                            height: paletteSelected == index ? 55 : 40,
-                            child: CircularProgressIndicator(
-                              backgroundColor: Color(0xFFCCCCCC),
-                              valueColor:
-                                  AlwaysStoppedAnimation(Color(0xFF0AE682)),
-                              value: (finishedIds ?? 0 / allIds),
-                              strokeWidth: 5,
-                            ),
-                          ),
-                          Container(
-                            margin:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            decoration: getBoxDecoration(paletteColors[index]),
-                            width: 50.0,
-                            height: 50.0,
-                            child: Center(
-                              child: Text('${index + 1}',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize:
-                                          paletteSelected == index ? 26 : 20)),
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  }),
-            ),
+            child: PaletteColor(
+                paletteColors, colorGroup, fillColors, paletteSelected,
+                (index, color) {
+              var msg = {
+                "type": "ACT_COLOR_STATE",
+                "payload": {
+                  "colorIdx": index,
+                  "colorVal": color,
+                },
+              };
+              sentMsgToWeb(msg);
+              setState(() {
+                paletteSelected = index;
+              });
+              print('bbbbb: $paletteSelected');
+            }),
           )
         ],
       ),
     );
   }
-
-  BoxDecoration getBoxDecoration(String value) {
-    if (value.contains(':')) {
-      if (value.startsWith('r')) {
-        return BoxDecoration(
-            gradient: getRadialGradient(value),
-            borderRadius: BorderRadius.circular(25.0));
-      }
-      if (value.startsWith('v')) {
-        return BoxDecoration(
-            gradient: getLinearGradient(
-                value, Alignment.topCenter, Alignment.bottomCenter),
-            borderRadius: BorderRadius.circular(25.0));
-      }
-      if (value.startsWith('h')) {
-        return BoxDecoration(
-            gradient: getLinearGradient(
-                value, Alignment.centerLeft, Alignment.centerRight),
-            borderRadius: BorderRadius.circular(25.0));
-      }
-    }
-    return BoxDecoration(
-        color: Color(int.parse('0xFF${value.substring(1)}')),
-        borderRadius: BorderRadius.circular(25.0));
-  }
-}
-
-LinearGradient getLinearGradient(String value, Alignment begin, Alignment end) {
-  var colorType = value.substring(0, 1);
-  var colors = value.substring(2).split(',');
-  var colorStart = colors[0];
-  var colorEnd = colors[1];
-  print('aaaa: $colorType, $colorStart, $colorEnd');
-  return LinearGradient(begin: begin, end: end, colors: [
-    Color(int.parse('0xFF${colorStart.substring(1)}')),
-    Color(int.parse('0xFF${colorEnd.substring(1)}')),
-  ]);
-}
-
-RadialGradient getRadialGradient(String value) {
-  var colorType = value.substring(0, 1);
-  var colors = value.substring(2).split(',');
-  var colorStart = colors[0];
-  var colorEnd = colors[1];
-  print('aaaa: $colorType, $colorStart, $colorEnd');
-  return RadialGradient(colors: [
-    Color(int.parse('0xFF${colorStart.substring(1)}')),
-    Color(int.parse('0xFF${colorEnd.substring(1)}')),
-  ]);
 }

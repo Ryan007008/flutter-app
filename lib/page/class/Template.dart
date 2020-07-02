@@ -1,7 +1,3 @@
-import 'dart:convert';
-
-import 'package:flutterapp/page/db/template_db.dart';
-import 'package:sqflite/sqflite.dart';
 
 class Template {
   final String id;
@@ -14,6 +10,7 @@ class Template {
   final int jigsawNum;
   final int openDate;
   final bool isSpecial;
+  String outPath = '';
 
   get url {
     return "https://d18z1pzpcvd03w.cloudfront.net/$id.png";
