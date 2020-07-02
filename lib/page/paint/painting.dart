@@ -197,14 +197,18 @@ class PaintingPageState extends State<PaintingPage> {
   void findNext() {
     var fillIds = fillColors.values.toList()[paletteSelected].length;
     var allIds = List.from(colorGroup.values.toList()[paletteSelected]).length;
-    print('fff: $fillIds');
     if (fillIds == allIds) {
-      print('paletteSelected111: $paletteSelected');
-      setState(() {
-        paletteSelected++;
-      });
-      print('paletteSelected: $paletteSelected');
-      if (paletteSelected > paletteColors.length - 1) {
+      var nextIndex = -1;
+      for(var i = paletteSelected + 1; i < paletteColors.length; i++) {
+        var fillIds = fillColors.values.toList()[i].length;
+        var allIds = List.from(colorGroup.values.toList()[i]).length;
+        if (fillIds != allIds) {
+          nextIndex = i;
+          break;
+        }
+      }
+
+      if (nextIndex < 0) {
         var msg = {
           "type": "ACT_EXPORT_CANVAS",
           "payload": {"contentType": "base64png", "postAction": "finish"}
@@ -212,6 +216,9 @@ class PaintingPageState extends State<PaintingPage> {
         sentMsgToWeb(msg);
         return;
       }
+      setState(() {
+        paletteSelected = nextIndex;
+      });
       var msg = {
         "type": "ACT_COLOR_STATE",
         "payload": {
