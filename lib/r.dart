@@ -95,6 +95,8 @@ class R {
   static final String imagesDailyGift = 'images/daily_gift.png';
   /// ![](http://127.0.0.1:9002/images/ic_set_fb.png)
   static final String imagesIcSetFb = 'images/ic_set_fb.png';
+  /// ![](http://127.0.0.1:9002/images/ic_color_done.png)
+  static final String imagesIcColorDone = 'images/ic_color_done.png';
   /// ![](http://127.0.0.1:9002/images/pic_cell_placeholder.png)
   static final String imagesPicCellPlaceholder = 'images/pic_cell_placeholder.png';
 }

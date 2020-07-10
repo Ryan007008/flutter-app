@@ -48,7 +48,10 @@ class TemplateProvider extends BaseDbProvider {
 
   ///获取事件数据
   Future<List<Template>> getAllTemplates(Database db) async {
-    List<Map<String, dynamic>> maps = await  db.query(name);
+    List<Map<String, dynamic>> maps;
+    await db.transaction((txn) async {
+      maps = await  txn.query(name);
+    });
     if (maps.length > 0) {
       return maps.map((e) => Template.fromJson(e)).toList();
     }

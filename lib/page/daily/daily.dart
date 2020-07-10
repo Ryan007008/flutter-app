@@ -23,8 +23,8 @@ class DailyList extends StatefulWidget {
 class DailyListState extends State<DailyList>
     with AutomaticKeepAliveClientMixin {
   ScrollController _controller;
-  List<Template> data;
-  List<Template> headers;
+  Map<String, List<Template>> data = Map();
+  List<Template> headers = [];
   bool loading = true;
   TemplateManager manager = TemplateManager();
 
@@ -33,8 +33,6 @@ class DailyListState extends State<DailyList>
     // TODO: implement initState
     super.initState();
     _controller = ScrollController(initialScrollOffset: 0.0);
-    data = [];
-    headers = [];
     getData();
   }
 
@@ -63,31 +61,61 @@ class DailyListState extends State<DailyList>
   getData() async {
     await manager.syncRemoteLibrary();
     var dailies = await manager.getDaily();
+    dailies.sort((a, b) => b.openDate - a.openDate);
+    var dataMap = Map<String, List<Template>>();
+    dailies.forEach((element) {
+      var date = DateTime.fromMillisecondsSinceEpoch(element.openDate * 1000);
+      var m = DateTime(date.year, date.month).toIso8601String();
+      if (!dataMap.containsKey(m)) {
+        dataMap[m] = [];
+      }
+      dataMap[m].add(element);
+    });
     setState(() {
-      data = dailies;
+      data = dataMap;
       headers = manager.dailyHeaders;
       loading = false;
     });
   }
 
   Widget getDailyList() {
+    var list = getBoxAdapter();
+    list.insert(0, SliverToBoxAdapter(
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 20.0),
+        child: DailyHeader(headers),
+        height: 314,
+      ),
+    ));
     return CustomScrollView(
-      slivers: [
-        SliverToBoxAdapter(
-          child: Container(
-            padding: const EdgeInsets.only(bottom: 20.0),
-            child: DailyHeader(headers),
-            height: 314,
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: getList(),
-        )
-      ],
+      slivers: list
     );
   }
 
-  Widget getList() {
+  List<Widget> getBoxAdapter() {
+    var lists = data.entries.toList();
+    lists.sort((a, b) {
+      return DateTime.parse(b.key).millisecondsSinceEpoch - DateTime.parse(a.key).millisecondsSinceEpoch;
+    }) ;
+    return lists.map((e) => SliverToBoxAdapter(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+         Container(
+           child: Center(
+             child: Text('${DateTime.parse(e.key).month}月', style: TextStyle(fontSize: 18)),
+           ),
+           height: 40,
+           width: 60,
+//           padding: const EdgeInsets.symmetric(horizontal: 15.0),
+         ),
+          getList(e.value)
+        ],
+      ),
+    )).toList();
+  }
+
+  Widget getList(List<Template> templates) {
     var imageWidth = (MediaQuery.of(context).size.width - 30) / 2;
     return GridView.builder(
         primary: false,
@@ -97,10 +125,10 @@ class DailyListState extends State<DailyList>
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
         ),
-        itemCount: data.length,
+        itemCount: templates.length,
         controller: _controller,
         itemBuilder: (context, index) {
-          Template template = data[index];
+          Template template = templates[index];
           var day =
               DateTime.fromMillisecondsSinceEpoch(template.openDate * 1000).day;
           return GestureDetector(
@@ -135,9 +163,13 @@ class DailyListState extends State<DailyList>
                                   bottomRight: Radius.circular(10.0)),
                               child: Image.asset(R.imagesIcDailyItemCorner),
                             ),
-                            Text('$day',
-                                style: TextStyle(
-                                    color: Color(0xFF7A7B85), fontSize: 16)),
+                            Positioned(
+                              right: 10,
+                              bottom: 2,
+                              child: Text('$day',
+                                  style: TextStyle(
+                                      color: Color(0xFF7A7B85), fontSize: 16)),
+                            )
                           ],
                         ),
                       ),

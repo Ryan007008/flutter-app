@@ -5,8 +5,9 @@ import 'package:flutterapp/r.dart';
 
 class SharePage extends StatefulWidget {
   final String filePath;
+  final bool isWallpaper;
 
-  SharePage(this.filePath);
+  SharePage(this.filePath, this.isWallpaper);
 
   @override
   State<StatefulWidget> createState() {
@@ -19,6 +20,8 @@ class SharePageState extends State<SharePage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    var imgWidth = MediaQuery.of(context).size.width * (widget.isWallpaper ? 0.6 : 0.8);
+    var imgHeight = widget.isWallpaper ? imgWidth / (478 / 850) : imgWidth;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -43,8 +46,8 @@ class SharePageState extends State<SharePage> {
           Container(
             color: Colors.black,
             child: Image.file(File(widget.filePath)),
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.width * 0.8,
+            width: imgWidth,
+            height: imgHeight,
             margin: const EdgeInsets.symmetric(vertical: 20.0),
           ),
           Container(

@@ -127,10 +127,12 @@ class TemplateManager {
     Database db = await provider.getDataBase();
     if (pictures != null) {
       await db.transaction((txn) async {
+        var batch = txn.batch();
         pictures.forEach((element) {
           Template template = Template.fromNotwork(element);
-          provider.insert(txn, template);
+          batch.insert('TemplateInfo', template.toJson());
         });
+        await batch.commit(noResult: true);
       });
     }
     List<Template> data = await provider.getAllTemplatesByTime(db, today);

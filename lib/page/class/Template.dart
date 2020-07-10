@@ -28,11 +28,11 @@ class Template {
   Template.fromNotwork(Map<String, dynamic> json)
       : id = json['id'],
         tags = json['tags'].map((tag) => tag.toString()).toList().join(','),
-        link = json['link'],
+        link = json['link'] ?? '',
         hash = json['hash'],
         isDaily = json['is_daily'],
         pathNum = json['path_num'],
-        jigsawId = json['jigsaw_id'],
+        jigsawId = json['jigsaw_id'] ?? '',
         jigsawNum = json['jigsaw_num'],
         openDate = json['open_at'] ?? 0,
         isSpecial = json['tear_film'] ?? false;
@@ -44,7 +44,7 @@ class Template {
         hash = json['hash'],
         isDaily = json['isDaily'] == 0 ? false : true,
         pathNum = json['pathNum'],
-        jigsawId = json['jigsawId'] ?? '',
+        jigsawId = json['jigsawId'],
         jigsawNum = json['jigsawNum'],
         openDate = json['openDate'] ?? 0,
         isSpecial = json['isSpecial'] == 0 ? false : true;
@@ -53,7 +53,7 @@ class Template {
         'id': id,
         'hash': hash,
         'tags': tags,
-        'link': link ?? '',
+        'link': link,
         'isDaily': isDaily ? 1 : 0,
         'pathNum': pathNum,
         'jigsawId': jigsawId,

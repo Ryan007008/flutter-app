@@ -114,6 +114,7 @@ flutter:
     - images/ic_set_conceal_on.png
     - images/daily_gift.png
     - images/ic_set_fb.png
+    - images/ic_color_done.png
     - images/pic_cell_placeholder.png
     # assets-generator-end
   # An image asset can refer to one or more resolution-specific "variants", see

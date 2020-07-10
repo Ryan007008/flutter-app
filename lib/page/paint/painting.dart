@@ -33,12 +33,14 @@ class PaintingPageState extends State<PaintingPage> {
   File svgPath;
   File imagePath;
   bool loading = true;
+  bool isWallpaper = false;
   final flutterWebViewPlugin = FlutterWebviewPlugin();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    isWallpaper = widget.tags.contains('wallpaper');
     manager.getDownloadPath().then((value) {
       var fileJson = File('$value/${widget.id}.json');
       var data = jsonDecode(fileJson.readAsStringSync());
@@ -78,7 +80,7 @@ class PaintingPageState extends State<PaintingPage> {
     // TODO: implement build
     String url =
         'file:///android_asset/flutter_assets/images/dist/index.html?bgcolor=ffffff';
-    if (widget.tags.contains('wallpaper')) {
+    if (isWallpaper) {
       url =
           'file:///android_asset/flutter_assets/images/dist/index_wallpaper.html?bgcolor=ffffff';
     }
@@ -186,7 +188,7 @@ class PaintingPageState extends State<PaintingPage> {
           file.writeAsBytesSync(base64.decode(content));
           flutterWebViewPlugin.close();
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return SharePage(file.path);
+            return SharePage(file.path, isWallpaper);
           }));
         });
 

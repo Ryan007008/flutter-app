@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterapp/r.dart';
 
 class PaletteColor extends StatelessWidget {
   final List<String> paletteColors;
@@ -29,26 +30,35 @@ class PaletteColor extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  progress != 1.0 ? SizedBox(
-                    width: selected == index ? 55 : 40,
-                    height: selected == index ? 55 : 40,
-                    child: CircularProgressIndicator(
-                      backgroundColor: Color(0xFFCCCCCC),
-                      valueColor: AlwaysStoppedAnimation(Color(0xFF0AE682)),
-                      value: progress,
-                      strokeWidth: 5,
-                    ),
-                  ) : Container(),
+                  progress >= 1.0
+                      ? SizedBox(
+                          width: selected == index ? 55 : 40,
+                          height: selected == index ? 55 : 40,
+                          child: CircularProgressIndicator(
+                            backgroundColor: Color(0xFFCCCCCC),
+                            valueColor:
+                                AlwaysStoppedAnimation(Color(0xFF0AE682)),
+                            value: progress,
+                            strokeWidth: 5,
+                          ),
+                        )
+                      : Container(),
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 10.0),
                     decoration: getBoxDecoration(paletteColors[index]),
                     width: 50.0,
                     height: 50.0,
                     child: Center(
-                      child: Text('${index + 1}',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: selected == index ? 26 : 20)),
+                      child: progress >= 1.0
+                          ? Image.asset(
+                              R.imagesIcColorDone,
+                              width: 30,
+                              height: 30,
+                            )
+                          : Text('${index + 1}',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: selected == index ? 26 : 20)),
                     ),
                   )
                 ],
