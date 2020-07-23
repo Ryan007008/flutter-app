@@ -1,3 +1,4 @@
+import 'package:flutterapp/page/class/workRecord.dart';
 
 class Template {
   final String id;
@@ -10,7 +11,9 @@ class Template {
   final int jigsawNum;
   final int openDate;
   final bool isSpecial;
+  bool downloaded;
   String outPath = '';
+  WorkRecord record;
 
   get url {
     return "https://d18z1pzpcvd03w.cloudfront.net/$id.png";
@@ -19,7 +22,9 @@ class Template {
   get isNew {
     var time = DateTime.fromMillisecondsSinceEpoch(openDate * 1000);
     var now = DateTime.now();
-    return time.year == now.year && time.month == now.month && time.day == now.day;
+    return time.year == now.year &&
+        time.month == now.month &&
+        time.day == now.day;
   }
 
   Template(this.id, this.tags, this.link, this.hash, this.isDaily, this.pathNum,
@@ -27,7 +32,7 @@ class Template {
 
   Template.fromNotwork(Map<String, dynamic> json)
       : id = json['id'],
-        tags = json['tags'].map((tag) => tag.toString()).toList().join(','),
+        tags = json['tags'].join(','),
         link = json['link'] ?? '',
         hash = json['hash'],
         isDaily = json['is_daily'],
@@ -35,7 +40,8 @@ class Template {
         jigsawId = json['jigsaw_id'] ?? '',
         jigsawNum = json['jigsaw_num'],
         openDate = json['open_at'] ?? 0,
-        isSpecial = json['tear_film'] ?? false;
+        isSpecial = json['tear_film'] ?? false,
+        downloaded = false;
 
   Template.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -47,7 +53,8 @@ class Template {
         jigsawId = json['jigsawId'],
         jigsawNum = json['jigsawNum'],
         openDate = json['openDate'] ?? 0,
-        isSpecial = json['isSpecial'] == 0 ? false : true;
+        isSpecial = json['isSpecial'] == 0 ? false : true,
+        downloaded = json['downloaded'] == 0 ? false : true;
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -59,7 +66,8 @@ class Template {
         'jigsawId': jigsawId,
         'jigsawNum': jigsawNum,
         'openDate': openDate,
-        'isSpecial': isSpecial ? 1 : 0
+        'isSpecial': isSpecial ? 1 : 0,
+        'downloaded': downloaded ? 1 : 0
       };
 
   Map<String, dynamic> toMap() => {
@@ -72,8 +80,8 @@ class Template {
         'jigsawId': jigsawId,
         'jigsawNum': jigsawNum,
         'openDate': openDate,
-        'isSpecial': isSpecial
+        'isSpecial': isSpecial,
+        'downloaded': downloaded,
+        'record': record?.toJson()
       };
 }
-
-

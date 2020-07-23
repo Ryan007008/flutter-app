@@ -67,6 +67,7 @@ abstract class BaseDbProvider {
   @mustCallSuper
   open() async {
     if (!isTableExits) {
+      print('tableName(): ${tableName()}');
       await prepare(tableName(), createTableString());
     }
     return await SqlManager.getCurrentDatabase();

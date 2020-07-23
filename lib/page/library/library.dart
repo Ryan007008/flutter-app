@@ -3,11 +3,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutterapp/page/class/Template.dart';
-import 'package:flutterapp/page/class/TemplateManager.dart';
+import 'package:flutterapp/page/class/template.dart';
+import 'package:flutterapp/page/class/templateManager.dart';
+import 'package:flutterapp/page/class/workManager.dart';
 import 'package:flutterapp/page/library/banner.dart';
-import 'package:flutterapp/page/library/categroy_list.dart';
+import 'package:flutterapp/page/library/categroyList.dart';
 import 'package:flutterapp/page/paint/painting.dart';
+import 'package:flutterapp/page/test/customPaintArea.dart';
 
 class LibraryPage extends StatefulWidget {
   const LibraryPage();
@@ -27,6 +29,7 @@ class LibraryState extends State<LibraryPage>
 
   int _selectedIndex;
   TemplateManager manager = TemplateManager();
+  WorkManagerInstance workManager = WorkManagerInstance();
   bool loading = true;
   double _scrollToOffsetY = 0;
 
@@ -159,7 +162,6 @@ class LibraryState extends State<LibraryPage>
               onTap: onTapItem,
               scrollToOffsetY: _scrollToOffsetY,
               getOffset: (offset) => setState(() {
-                print('offset: $offset');
                 _scrollToOffsetY = offset;
               }),
             ))
@@ -172,12 +174,22 @@ class LibraryState extends State<LibraryPage>
       loading = true;
     });
     Template template = await manager.getTemplateById(id);
+    if (template.record == null) {
+      template.record = workManager.createNewWork(template);
+    }
+    workManager.continueWork(template);
+    print('ttt: ${template.toMap()}');
     if (template != null) {
-      await manager.download(id, template.hash);
+      if (!template.downloaded) {
+        var r = await manager.download(id, template.hash);
+        template.downloaded = r;
+        await manager.update(template.id, {'downloaded': 1});
+      }
       setState(() {
         loading = false;
       });
       Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return CustomAreaRoute(id);
         return PaintingPage(id, categoryId, template.tags);
       }));
     }

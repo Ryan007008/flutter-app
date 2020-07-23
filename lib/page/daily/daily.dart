@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutterapp/page/class/Template.dart';
-import 'package:flutterapp/page/class/TemplateManager.dart';
+import 'package:flutterapp/page/class/template.dart';
+import 'package:flutterapp/page/class/templateManager.dart';
 import 'package:flutterapp/page/daily/header.dart';
 import 'package:flutterapp/page/paint/painting.dart';
 import 'package:flutterapp/r.dart';
@@ -83,7 +83,7 @@ class DailyListState extends State<DailyList>
     list.insert(0, SliverToBoxAdapter(
       child: Container(
         padding: const EdgeInsets.only(bottom: 20.0),
-        child: DailyHeader(headers),
+        child: headers.length > 0 ? DailyHeader(headers) : Container(),
         height: 314,
       ),
     ));

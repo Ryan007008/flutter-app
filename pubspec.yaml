@@ -64,6 +64,10 @@ flutter:
     - images/dist/app.js
     - images/dist/wallpaper.js
     - images/dist/index_wallpaper.html
+    - data/testData0.json
+    - data/testData1.json
+    - data/testData2.json
+    - data/testData3.json
     # assets-generator-begin
     # images/*
     - images/ic_tab_daily_highlight.png

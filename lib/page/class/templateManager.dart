@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:dio/dio.dart';
-import 'package:flutterapp/page/class/Template.dart';
-import 'package:flutterapp/page/db/template_db.dart';
+import 'package:flutterapp/page/class/template.dart';
+import 'package:flutterapp/page/class/workRecord.dart';
+import 'package:flutterapp/page/db/templateDB.dart';
+import 'package:flutterapp/page/db/workRecordDB.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -93,7 +95,11 @@ class TemplateManager {
   List<Template> daily = new List();
   List<Template> dailyHeaders = new List();
 
-  TemplateManager();
+  TemplateProvider templateProvider;
+
+  TemplateManager() {
+    templateProvider = TemplateProvider();
+  }
 
   TemplateManager.fromJson(Map<String, dynamic> json)
       : pictures = json['pictures'],
@@ -123,26 +129,27 @@ class TemplateManager {
       }
     } catch (e) {}
 
-    TemplateProvider provider = new TemplateProvider();
-    Database db = await provider.getDataBase();
+    Database db = await templateProvider.getDataBase();
     if (pictures != null) {
       await db.transaction((txn) async {
         var batch = txn.batch();
         pictures.forEach((element) {
           Template template = Template.fromNotwork(element);
-          batch.insert('TemplateInfo', template.toJson());
+          batch.insert('TemplateInfo', template.toJson(),
+              conflictAlgorithm: ConflictAlgorithm.replace);
         });
         await batch.commit(noResult: true);
       });
     }
-    List<Template> data = await provider.getAllTemplatesByTime(db, today);
+    List<Template> data = await templateProvider.getAllTemplatesByTime(today);
+    print('data: ${data.length}');
     _library = data;
   }
 
   Map<String, List<Template>> getGallery() {
     if (_categories == null) {
       Map<String, List<Template>> categoryMap = new Map();
-      _library.forEach((template) {
+      _library.where((element) => element.isSpecial).forEach((template) {
         if (template.openDate * 1000 <= today.millisecondsSinceEpoch) {
           if (template.isNew && template.isDaily) return;
           template.tags.split(',').forEach((tag) {
@@ -173,9 +180,7 @@ class TemplateManager {
   Future<List<Template>> getDaily() async {
     if (daily.length <= 0) {
       DateTime time = today.add(Duration(days: 1));
-      TemplateProvider provider = new TemplateProvider();
-      Database db = await provider.getDataBase();
-      List<Template> data = await provider.getAllTemplates(db);
+      List<Template> data = await templateProvider.getAllTemplates();
       data.forEach((template) {
         if (template.isDaily) {
           if (template.openDate * 1000 <
@@ -190,18 +195,22 @@ class TemplateManager {
   }
 
   Future<Template> getTemplateById(String id) async {
-    TemplateProvider provider = new TemplateProvider();
-    Database db = await provider.getDataBase();
-    return await provider.getTemplatesById(db, id);
+    Template template = await templateProvider.getTemplatesById(id);
+
+    WorkRecordProvider workRecordProvider = new WorkRecordProvider();
+    WorkRecord record = await workRecordProvider.getWorkRecordById(template.id);
+
+    template.record = record;
+    return template;
   }
 
-  Future download(String id, String hash) async {
+  Future update(String id, Map<String, dynamic> values) async {
+    await templateProvider.update(id, values);
+  }
+
+  Future<bool> download(String id, String hash) async {
     var url = "https://d18z1pzpcvd03w.cloudfront.net/$id.$hash.zip";
     String path = await getDownloadPath();
-
-    var fileJson = File('$path/$id.json');
-    if (fileJson.existsSync()) return;
-
     Response response = await Dio().download(url, '$path/$id.zip');
 
     if (response.statusCode == HttpStatus.ok) {
@@ -215,6 +224,9 @@ class TemplateManager {
           ..writeAsBytesSync(file.content);
       }
       await file.delete();
+      return true;
+    } else {
+      return false;
     }
   }
 

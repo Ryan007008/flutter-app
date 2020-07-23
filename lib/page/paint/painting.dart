@@ -4,7 +4,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:flutterapp/page/class/TemplateManager.dart';
+import 'package:flutterapp/page/class/templateManager.dart';
+import 'package:flutterapp/page/class/workManager.dart';
 import 'package:flutterapp/page/paint/palette_color.dart';
 import 'package:flutterapp/page/share/share.dart';
 import 'package:flutterapp/r.dart';
@@ -25,6 +26,7 @@ class PaintingPage extends StatefulWidget {
 
 class PaintingPageState extends State<PaintingPage> {
   TemplateManager manager = TemplateManager();
+  WorkManagerInstance workManager = WorkManagerInstance();
   int hintCount = 0;
   List<String> paletteColors = [];
   Map<String, dynamic> colorGroup;
@@ -41,6 +43,7 @@ class PaintingPageState extends State<PaintingPage> {
     // TODO: implement initState
     super.initState();
     isWallpaper = widget.tags.contains('wallpaper');
+    workManager.getConfig();
     manager.getDownloadPath().then((value) {
       var fileJson = File('$value/${widget.id}.json');
       var data = jsonDecode(fileJson.readAsStringSync());
@@ -50,9 +53,6 @@ class PaintingPageState extends State<PaintingPage> {
         svgPath = File('$value/${widget.id}.svg');
         imagePath = File('$value/${widget.id}_tear_film.png');
         loading = false;
-        paletteColors.forEach((element) {
-          fillColors[element] = Set<String>.from([]);
-        });
       });
     });
     flutterWebViewPlugin.onStateChanged.listen((event) {
@@ -158,7 +158,7 @@ class PaintingPageState extends State<PaintingPage> {
       case 'ACT_ONDRAWED_COLOR':
         var colorVal = payload['colorState']['colorVal'];
         var pathIds = payload['pathIds'] as List;
-        saveStep(colorVal, pathIds);
+        workManager.setFillColor(colorVal, pathIds);
         break;
       case 'TOAPP_LONG_TAP':
         var colorIdx = payload['colorState']['colorIdx'];
@@ -229,6 +229,7 @@ class PaintingPageState extends State<PaintingPage> {
         },
       };
       sentMsgToWeb(msg);
+      workManager.saveSteps();
     }
   }
 
@@ -297,7 +298,7 @@ class PaintingPageState extends State<PaintingPage> {
           getHint(),
           Expanded(
             child: PaletteColor(
-                paletteColors, colorGroup, fillColors, paletteSelected,
+                paletteColors, colorGroup, workManager.fillColors, paletteSelected,
                 (index, color) {
               var msg = {
                 "type": "ACT_COLOR_STATE",
