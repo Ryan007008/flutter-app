@@ -41,6 +41,7 @@ dependencies:
   cached_network_image: ^2.2.0+1
   flutter_svg: ^0.18.0
   flutter_webview_plugin: ^0.3.11
+  lottie: ^0.4.1
 
 dev_dependencies:
   flutter_test:
@@ -59,67 +60,81 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - images/dist/index.html
-    - images/dist/vendor.js
-    - images/dist/app.js
-    - images/dist/wallpaper.js
-    - images/dist/index_wallpaper.html
-    - data/testData0.json
-    - data/testData1.json
-    - data/testData2.json
-    - data/testData3.json
+    - assets/dist/index.html
+    - assets/dist/vendor.js
+    - assets/dist/app.js
+    - assets/dist/wallpaper.js
+    - assets/dist/index_wallpaper.html
+    - assets/data/testData0.json
+    - assets/data/testData1.json
+    - assets/data/testData2.json
+    - assets/data/testData3.json
+    - assets/data/testData4.json
+    - assets/data/testData5.json
+    - assets/data/testData6.json
+    - assets/data/testData7.json
+    - assets/data/testData8.json
+    - assets/data/testData9.json
+    - assets/data/testData10.json
+    - assets/data/testData11.json
+    - assets/data/testData12.json
+    - assets/data/testData13.json
+    - assets/data/testData14.json
+    - assets/data/testData15.json
+    #lottie
+    - assets/lottie/correct.json
     # assets-generator-begin
-    # images/*
-    - images/ic_tab_daily_highlight.png
-    - images/ic_carousel_new.png
-    - images/pic_splash.png
-    - images/daily_blur.png
-    - images/ic_special_first_item.png
-    - images/ic_carousel_alice.png
-    - images/ic_tab_news_grey.png
-    - images/ic_tab_mywork_highlight.png
-    - images/pic_empty_mywork.png
-    - images/ic_share_share.png
-    - images/ic_tab_daily_grey.png
-    - images/ic_badge_special.png
-    - images/ic_carousel_facebook.png
-    - images/ic_set_moon.png
-    - images/ic_set_vibra_on.png
-    - images/ic_set_rate.png
-    - images/ic_set_filter.png
-    - images/ic_badge_new.png
-    - images/ic_badge_video.png
-    - images/ic_set_subscri.png
-    - images/ic_badge_done.png
-    - images/ic_all_set.png
-    - images/ic_achievement.png
-    - images/ic_set_alice.png
-    - images/ic_badge_wallpaper.png
-    - images/ic_share_save.png
-    - images/ic_carousel_sub.png
-    - images/ic_tab_mywork_grey.png
-    - images/ic_badge_jigsaw.png
-    - images/ic_share_instagram.png
-    - images/ic_badge_glitter.png
-    - images/daliy_watermark.png
-    - images/ic_set_restore.png
-    - images/ic_set_vibra_off.png
-    - images/ic_tab_news_highlight.png
-    - images/ic_set.png
-    - images/ic_hint.png
-    - images/ic_set_sun.png
-    - images/ic_tab_gallery_highlight.png
-    - images/ic_badge_ads.png
-    - images/ic_daily_item_corner.png
-    - images/ic_tab_gallery_grey.png
-    - images/pic_cell_placeholder_wallpaper.png
-    - images/ic_action_back.png
-    - images/ic_set_dark.png
-    - images/ic_set_conceal_on.png
-    - images/daily_gift.png
-    - images/ic_set_fb.png
-    - images/ic_color_done.png
-    - images/pic_cell_placeholder.png
+    # assets/images/*
+    - assets/images/ic_tab_daily_highlight.png
+    - assets/images/ic_carousel_new.png
+    - assets/images/pic_splash.png
+    - assets/images/daily_blur.png
+    - assets/images/ic_special_first_item.png
+    - assets/images/ic_carousel_alice.png
+    - assets/images/ic_tab_news_grey.png
+    - assets/images/ic_tab_mywork_highlight.png
+    - assets/images/pic_empty_mywork.png
+    - assets/images/ic_share_share.png
+    - assets/images/ic_tab_daily_grey.png
+    - assets/images/ic_badge_special.png
+    - assets/images/ic_carousel_facebook.png
+    - assets/images/ic_set_moon.png
+    - assets/images/ic_set_vibra_on.png
+    - assets/images/ic_set_rate.png
+    - assets/images/ic_set_filter.png
+    - assets/images/ic_badge_new.png
+    - assets/images/ic_badge_video.png
+    - assets/images/ic_set_subscri.png
+    - assets/images/ic_badge_done.png
+    - assets/images/ic_all_set.png
+    - assets/images/ic_achievement.png
+    - assets/images/ic_set_alice.png
+    - assets/images/ic_badge_wallpaper.png
+    - assets/images/ic_share_save.png
+    - assets/images/ic_carousel_sub.png
+    - assets/images/ic_tab_mywork_grey.png
+    - assets/images/ic_badge_jigsaw.png
+    - assets/images/ic_share_instagram.png
+    - assets/images/ic_badge_glitter.png
+    - assets/images/daliy_watermark.png
+    - assets/images/ic_set_restore.png
+    - assets/images/ic_set_vibra_off.png
+    - assets/images/ic_tab_news_highlight.png
+    - assets/images/ic_set.png
+    - assets/images/ic_hint.png
+    - assets/images/ic_set_sun.png
+    - assets/images/ic_tab_gallery_highlight.png
+    - assets/images/ic_badge_ads.png
+    - assets/images/ic_daily_item_corner.png
+    - assets/images/ic_tab_gallery_grey.png
+    - assets/images/pic_cell_placeholder_wallpaper.png
+    - assets/images/ic_action_back.png
+    - assets/images/ic_set_dark.png
+    - assets/images/ic_set_conceal_on.png
+    - assets/images/daily_gift.png
+    - assets/images/ic_set_fb.png
+    - assets/images/ic_color_done.png
+    - assets/images/pic_cell_placeholder.png
     # assets-generator-end
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

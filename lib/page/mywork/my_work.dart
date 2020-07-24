@@ -59,7 +59,7 @@ class MyWorkListState extends State<MyWorkList>
                   width: 48,
                   height: 48,
                   padding: const EdgeInsets.all(5.0),
-                  child: Image.asset(R.imagesIcAchievement),
+                  child: Image.asset(R.assetsImagesIcAchievement),
                 ),
               ),
               Expanded(
@@ -141,7 +141,7 @@ class MyWorkListState extends State<MyWorkList>
                   width: 48,
                   height: 48,
                   padding: const EdgeInsets.all(5.0),
-                  child: Image.asset(R.imagesIcSet),
+                  child: Image.asset(R.assetsImagesIcSet),
                 ),
               )
             ],
@@ -179,7 +179,7 @@ class MyWorkListState extends State<MyWorkList>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image.asset(
-          R.imagesPicEmptyMywork,
+          R.assetsImagesPicEmptyMywork,
           fit: BoxFit.cover,
           width: 225,
           height: 178,

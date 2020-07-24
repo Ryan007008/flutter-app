@@ -1,13 +1,15 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:path_provider/path_provider.dart';
 
 class CustomRouteRect extends StatefulWidget {
-  final name;
-  final fileName;
+  final String name;
+  final String fileName;
 
   CustomRouteRect(this.name, this.fileName);
 
@@ -35,10 +37,34 @@ class CustomRouteRectState extends State<CustomRouteRect> {
     super.initState();
     boxWidth =
         (window.physicalSize.width / window.devicePixelRatio).floor() - 20.0;
-    DefaultAssetBundle.of(context)
-        .loadString('data/${widget.fileName}.json')
-        .then((value) {
-      var json = jsonDecode(value);
+    var num = int.parse(widget.fileName.split('').last);
+    if (num > 4) {
+      getLocalFile(num);
+    } else {
+      DefaultAssetBundle.of(context)
+          .loadString('assets/data/${widget.fileName}.json')
+          .then((value) {
+        var json = jsonDecode(value);
+        setState(() {
+          numbers = json['number'] as List;
+          numbers.asMap().entries.forEach((element) {
+            var areas = element.value['area'] as List;
+            textAreas.putIfAbsent(element.key, () => [areas.first, areas.last]);
+          });
+          lines = json['lines'];
+          loading = false;
+        });
+      });
+    }
+
+  }
+
+  getLocalFile(int num) async {
+    Directory directory = await getExternalStorageDirectory();
+    Directory createData = Directory('${directory.path}/createData');
+    var file = File('${createData.path}/testData$num.json');
+    if (file.existsSync()) {
+      var json = jsonDecode(file.readAsStringSync());
       setState(() {
         numbers = json['number'] as List;
         numbers.asMap().entries.forEach((element) {
@@ -48,7 +74,7 @@ class CustomRouteRectState extends State<CustomRouteRect> {
         lines = json['lines'];
         loading = false;
       });
-    });
+    }
   }
 
   @override
@@ -56,6 +82,7 @@ class CustomRouteRectState extends State<CustomRouteRect> {
     // TODO: implement build
     if (loading) {
       return Container(
+        color: Colors.black,
         child: Center(
           child: SpinKitCircle(
             color: Color(0xFFFD6F6F),

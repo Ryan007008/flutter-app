@@ -83,7 +83,7 @@ class LibraryBannerState extends State<LibraryBanner> {
             child: Container(
               width: 44,
               height: 44,
-              child: Image.asset(R.imagesIcAllSet),
+              child: Image.asset(R.assetsImagesIcAllSet),
             ),
           ),
         )
@@ -103,7 +103,7 @@ class LibraryBannerState extends State<LibraryBanner> {
           child: Stack(
             children: [
               Container(
-                child: Image.asset(R.imagesIcCarouselNew,
+                child: Image.asset(R.assetsImagesIcCarouselNew,
                     fit: BoxFit.cover, width: imageWidth, height: imageHeight),
               ),
               Container(
@@ -137,7 +137,7 @@ class LibraryBannerState extends State<LibraryBanner> {
           child: Stack(
             children: [
               Container(
-                child: Image.asset(R.imagesIcCarouselFacebook,
+                child: Image.asset(R.assetsImagesIcCarouselFacebook,
                     fit: BoxFit.cover, width: imageWidth, height: imageHeight),
               ),
               Container(
@@ -202,7 +202,7 @@ class LibraryBannerState extends State<LibraryBanner> {
           child: Stack(
             children: [
               Container(
-                child: Image.asset(R.imagesIcCarouselSub,
+                child: Image.asset(R.assetsImagesIcCarouselSub,
                     fit: BoxFit.cover, width: imageWidth, height: imageHeight),
               )
             ],

@@ -51,7 +51,7 @@ class PaletteColor extends StatelessWidget {
                     child: Center(
                       child: progress >= 1.0
                           ? Image.asset(
-                              R.imagesIcColorDone,
+                              R.assetsImagesIcColorDone,
                               width: 30,
                               height: 30,
                             )

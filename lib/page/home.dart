@@ -18,6 +18,12 @@ class HomePage extends StatefulWidget {
 class HomeState extends State<HomePage> {
   int _selectedIndex = 0;
   PageController _controller;
+  List<Widget> _widgetOptions = [
+    LibraryPage(),
+    DailyList(),
+    NewsPage(),
+    MyWorkList(),
+  ];
 
   @override
   void initState() {
@@ -29,19 +35,7 @@ class HomeState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    const List<Widget> _widgetOptions = <Widget>[
-      LibraryPage(),
-      DailyList(),
-      NewsPage(),
-      MyWorkList(),
-    ];
-
-    void _onItemTapped(int index) {
-      _controller.jumpToPage(index);
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
+    const bool inProduction = const bool.fromEnvironment("dart.vm.product");
 
     return Scaffold(
       appBar: null,
@@ -61,20 +55,23 @@ class HomeState extends State<HomePage> {
             Positioned(
               right: 10,
               bottom: 150,
-              child: GestureDetector(
-                onTap: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) {
-                  return ListPage();
-                })),
-                child: Container(
-                  width: 80,
-                  height: 50,
-                  decoration: BoxDecoration(
-                      color: Colors.redAccent,
-                      borderRadius: BorderRadius.circular(10.0)),
-                  child: Center(
-                    child: Text('新关卡',
-                        style: TextStyle(color: Colors.white, fontSize: 20)),
+              child: Offstage(
+                offstage: inProduction,
+                child: GestureDetector(
+                  onTap: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                    return ListPage();
+                  })),
+                  child: Container(
+                    width: 80,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: Colors.redAccent,
+                        borderRadius: BorderRadius.circular(10.0)),
+                    child: Center(
+                      child: Text('新关卡',
+                          style: TextStyle(color: Colors.white, fontSize: 20)),
+                    ),
                   ),
                 ),
               ),
@@ -85,29 +82,32 @@ class HomeState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-              icon:
-                  Image.asset(R.imagesIcTabGalleryGrey, width: 25, height: 25),
-              activeIcon: Image.asset(R.imagesIcTabGalleryHighlight,
+              icon: Image.asset(R.assetsImagesIcTabGalleryGrey,
+                  width: 25, height: 25),
+              activeIcon: Image.asset(R.assetsImagesIcTabGalleryHighlight,
                   width: 25, height: 25),
               title: Text('Library',
                   style: TextStyle(color: Color(0xFFFD6F6F), fontSize: 10))),
           BottomNavigationBarItem(
-            icon: Image.asset(R.imagesIcTabDailyGrey, width: 25, height: 25),
-            activeIcon:
-                Image.asset(R.imagesIcTabDailyHighlight, width: 25, height: 25),
+            icon: Image.asset(R.assetsImagesIcTabDailyGrey,
+                width: 25, height: 25),
+            activeIcon: Image.asset(R.assetsImagesIcTabDailyHighlight,
+                width: 25, height: 25),
             title: Text('Daily',
                 style: TextStyle(color: Color(0xFFFD6F6F), fontSize: 10)),
           ),
           BottomNavigationBarItem(
-            icon: Image.asset(R.imagesIcTabNewsGrey, width: 25, height: 25),
-            activeIcon:
-                Image.asset(R.imagesIcTabNewsHighlight, width: 25, height: 25),
+            icon:
+                Image.asset(R.assetsImagesIcTabNewsGrey, width: 25, height: 25),
+            activeIcon: Image.asset(R.assetsImagesIcTabNewsHighlight,
+                width: 25, height: 25),
             title: Text('News',
                 style: TextStyle(color: Color(0xFFFD6F6F), fontSize: 10)),
           ),
           BottomNavigationBarItem(
-            icon: Image.asset(R.imagesIcTabMyworkGrey, width: 25, height: 25),
-            activeIcon: Image.asset(R.imagesIcTabMyworkHighlight,
+            icon: Image.asset(R.assetsImagesIcTabMyworkGrey,
+                width: 25, height: 25),
+            activeIcon: Image.asset(R.assetsImagesIcTabMyworkHighlight,
                 width: 25, height: 25),
             title: Text('Gallery',
                 style: TextStyle(color: Color(0xFFFD6F6F), fontSize: 10)),
@@ -117,5 +117,12 @@ class HomeState extends State<HomePage> {
         onTap: _onItemTapped,
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    _controller.jumpToPage(index);
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 }

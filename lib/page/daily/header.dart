@@ -51,7 +51,7 @@ class DailyHeaderState extends State<DailyHeader>
       alignment: Alignment.bottomCenter,
       children: [
         Container(
-          child: Image.asset(R.imagesDaliyWatermark),
+          child: Image.asset(R.assetsImagesDaliyWatermark),
           width: 340,
         ),
         DecoratedBox(
@@ -71,7 +71,7 @@ class DailyHeaderState extends State<DailyHeader>
                       height: 228,
                       imageUrl: widget.headers[0].url,
                       placeholder: (context, url) =>
-                          Image.asset(R.imagesPicCellPlaceholder),
+                          Image.asset(R.assetsImagesPicCellPlaceholder),
                     ),
                     Image.network(
                       widget.headers[0].url,
@@ -81,12 +81,12 @@ class DailyHeaderState extends State<DailyHeader>
                     ),
                     Opacity(
                       opacity: 0.93,
-                      child: Image.asset(R.imagesDailyBlur,
+                      child: Image.asset(R.assetsImagesDailyBlur,
                           fit: BoxFit.cover, width: 228, height: 228),
                     ),
                     Transform.scale(
                       scale: angle,
-                      child: Image.asset(R.imagesDailyGift,
+                      child: Image.asset(R.assetsImagesDailyGift,
                           fit: BoxFit.contain, width: 150, height: 150),
                     )
                   ],
@@ -108,7 +108,7 @@ class DailyHeaderState extends State<DailyHeader>
             child: Container(
               width: 44,
               height: 44,
-              child: Image.asset(R.imagesIcAllSet),
+              child: Image.asset(R.assetsImagesIcAllSet),
             ),
           ),
         )

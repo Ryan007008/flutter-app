@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutterapp/page/class/templateManager.dart';
+import 'package:lottie/lottie.dart';
 
 class CustomAreaRoute extends StatefulWidget {
   final id;
@@ -20,7 +21,8 @@ class CustomAreaRoute extends StatefulWidget {
   }
 }
 
-class CustomAreaRouteState extends State<CustomAreaRoute> {
+class CustomAreaRouteState extends State<CustomAreaRoute>
+    with TickerProviderStateMixin {
   Map<int, List<String>> fillArea = LinkedHashMap();
   Map<int, bool> finishedNumber = LinkedHashMap();
   Map<int, List<String>> textAreas = LinkedHashMap();
@@ -33,25 +35,25 @@ class CustomAreaRouteState extends State<CustomAreaRoute> {
   File imagePath;
   bool loading = true;
   bool isFinishedAll = false;
+  AnimationController _controller;
+  bool isCompleted = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _controller = AnimationController(vsync: this);
     boxWidth =
         (window.physicalSize.width / window.devicePixelRatio).floor() - 20.0;
-    var r = Random().nextInt(4);
+    var r = Random().nextInt(16);
     DefaultAssetBundle.of(context)
-        .loadString("data/testData$r.json")
+        .loadString("assets/data/testData$r.json")
         .then((value) {
       var json = jsonDecode(value);
       manager.getDownloadPath().then((value) {
         setState(() {
           numbers = json['number'] as List;
-          numbers
-              .asMap()
-              .entries
-              .forEach((element) {
+          numbers.asMap().entries.forEach((element) {
             var areas = element.value['area'] as List;
             textAreas.putIfAbsent(element.key, () => [areas.first, areas.last]);
             fillArea.putIfAbsent(element.key, () => []);
@@ -63,6 +65,22 @@ class CustomAreaRouteState extends State<CustomAreaRoute> {
         });
       });
     });
+    _controller.addStatusListener((status) {
+      //动画状态变化回调接口
+      print('aaa: $status');
+      if (status == AnimationStatus.completed) {
+//        setState(() {
+//          isCompleted = false;
+//        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -83,14 +101,8 @@ class CustomAreaRouteState extends State<CustomAreaRoute> {
         centerTitle: true,
       ),
       body: Container(
-        width: MediaQuery
-            .of(context)
-            .size
-            .width,
-        height: MediaQuery
-            .of(context)
-            .size
-            .height,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         color: Colors.black26,
         child: Stack(
           alignment: Alignment.center,
@@ -122,6 +134,12 @@ class CustomAreaRouteState extends State<CustomAreaRoute> {
               onPanEnd: (d) {
                 if (selectedPaintIndex < 0 || isFinishedAll) return;
                 finishedArea();
+                if (isFinishedAll) {
+                  setState(() {
+                    isCompleted = true;
+                  });
+                  _controller.forward();
+                }
               },
               child: Opacity(
                 opacity: isFinishedAll ? 0 : 1,
@@ -132,14 +150,51 @@ class CustomAreaRouteState extends State<CustomAreaRoute> {
               ),
             ),
             Positioned(
-              top: 50,
-              child: Offstage(
-                offstage: !isFinishedAll,
-                child: Text('恭喜你得到一副好图',
-                    style: TextStyle(color: Colors.red, fontSize: 30),
-                ),
-              ),
-            )
+                top: 100,
+                child: Offstage(
+                  offstage: !isCompleted,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width - 30,
+                    height: 330,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20.0)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Lottie.asset('assets/lottie/correct.json',
+                            width: 276,
+                            height: 180,
+                            fit: BoxFit.cover,
+                            controller: _controller, onLoaded: (c) {
+                          _controller.duration = c.duration;
+                        }),
+                        Text(
+                          '太棒了',
+                          style: TextStyle(color: Colors.red, fontSize: 30),
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: Container(
+                            width: 100,
+                            height: 50,
+                            margin: const EdgeInsets.only(top: 30),
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: Center(
+                              child: Icon(
+                                Icons.play_arrow,
+                                color: Colors.white,
+                                size: 35.0,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ))
           ],
         ),
       ),
@@ -164,13 +219,20 @@ class CustomAreaRouteState extends State<CustomAreaRoute> {
 
     if (finishedNumber.length == numbers.length) {
       var finishedAll =
-      finishedNumber.entries.where((element) => !element.value).toList();
+          finishedNumber.entries.where((element) => !element.value).toList();
       if (finishedAll.length == 0) {
         setState(() {
           isFinishedAll = true;
           selectedPaintIndex = -1;
         });
       }
+    }
+
+    if (fillArea[selectedPaintIndex] != null &&
+        fillArea[selectedPaintIndex].length <= 1) {
+      setState(() {
+        fillArea[selectedPaintIndex].clear();
+      });
     }
   }
 
@@ -185,13 +247,19 @@ class CustomAreaRouteState extends State<CustomAreaRoute> {
 
     if (fillArea[selectedPaintIndex].length == 0) return true;
 
-    var last = fillArea[selectedPaintIndex].last;
+    var fills = fillArea.values.join('');
+    if (fills.contains(area)) return false;
 
-    if (last == area) return false;
+    var textLast = textAreas[selectedPaintIndex];
+    if (fillArea[selectedPaintIndex].indexOf(textLast.first) >= 0 &&
+        fillArea[selectedPaintIndex].indexOf(textLast.last) >= 0) {
+      return false;
+    }
 
     var x = area.split('/')[0];
     var y = area.split('/')[1];
 
+    var last = fillArea[selectedPaintIndex].last;
     var x1 = last.split('/')[0];
     var y1 = last.split('/')[1];
 
@@ -233,10 +301,7 @@ class CustomAreaRouteState extends State<CustomAreaRoute> {
 
   chooseStartArea(Offset location) {
     var target = getTargetArea(location);
-    numbers
-        .asMap()
-        .entries
-        .forEach((element) {
+    numbers.asMap().entries.forEach((element) {
       var areas = element.value['area'] as List;
 
       if (target == areas.first || target == areas.last) {

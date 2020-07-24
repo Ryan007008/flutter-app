@@ -37,7 +37,7 @@ class SharePageState extends State<SharePage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             height: 32,
-            child: Image.asset(R.imagesIcActionBack),
+            child: Image.asset(R.assetsImagesIcActionBack),
           ),
         ),
       ),
@@ -58,7 +58,7 @@ class SharePageState extends State<SharePage> {
                   child: Container(
                     child: Column(
                       children: [
-                        Image.asset(R.imagesIcShareSave, width: 55, height: 55,),
+                        Image.asset(R.assetsImagesIcShareSave, width: 55, height: 55,),
                         Padding(
                           padding: const EdgeInsets.only(top: 10.0),
                           child: Text('Save', style: TextStyle(color: Color(0xFF333333), fontSize: 14),),
@@ -72,7 +72,7 @@ class SharePageState extends State<SharePage> {
                   child: Container(
                     child: Column(
                       children: [
-                        Image.asset(R.imagesIcShareInstagram, width: 55, height: 55,),
+                        Image.asset(R.assetsImagesIcShareInstagram, width: 55, height: 55,),
                         Padding(
                           padding: const EdgeInsets.only(top: 10.0),
                           child: Text('Instagram', style: TextStyle(color: Color(0xFF333333), fontSize: 14),),
@@ -87,7 +87,7 @@ class SharePageState extends State<SharePage> {
                   child: Container(
                     child: Column(
                       children: [
-                        Image.asset(R.imagesIcShareShare, width: 55, height: 55,),
+                        Image.asset(R.assetsImagesIcShareShare, width: 55, height: 55,),
                         Padding(
                           padding: const EdgeInsets.only(top: 10.0),
                           child: Text('More', style: TextStyle(color: Color(0xFF333333), fontSize: 14),),

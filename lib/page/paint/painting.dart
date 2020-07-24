@@ -79,10 +79,10 @@ class PaintingPageState extends State<PaintingPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     String url =
-        'file:///android_asset/flutter_assets/images/dist/index.html?bgcolor=ffffff';
+        'file:///android_asset/flutter_assets/assets/dist/index.html?bgcolor=ffffff';
     if (isWallpaper) {
       url =
-          'file:///android_asset/flutter_assets/images/dist/index_wallpaper.html?bgcolor=ffffff';
+          'file:///android_asset/flutter_assets/assets/dist/index_wallpaper.html?bgcolor=ffffff';
     }
 
     return WebviewScaffold(
@@ -111,7 +111,7 @@ class PaintingPageState extends State<PaintingPage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             height: 32,
-            child: Image.asset(R.imagesIcActionBack),
+            child: Image.asset(R.assetsImagesIcActionBack),
           ),
         ),
         actions: [
@@ -261,7 +261,7 @@ class PaintingPageState extends State<PaintingPage> {
                     width: 64.0,
                     child: Center(
                       child: Image.asset(
-                        R.imagesIcHint,
+                        R.assetsImagesIcHint,
                         width: 56,
                         height: 56,
                       ),

@@ -161,7 +161,7 @@ class DailyListState extends State<DailyList>
                             ClipRRect(
                               borderRadius: BorderRadius.only(
                                   bottomRight: Radius.circular(10.0)),
-                              child: Image.asset(R.imagesIcDailyItemCorner),
+                              child: Image.asset(R.assetsImagesIcDailyItemCorner),
                             ),
                             Positioned(
                               right: 10,

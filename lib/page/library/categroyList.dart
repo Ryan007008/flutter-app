@@ -72,17 +72,17 @@ class CategoryListState extends State<CategoryList> {
           var tag = '';
           var tagWidth = 26.0;
           if (template.isNew) {
-            tag = R.imagesIcBadgeNew;
+            tag = R.assetsImagesIcBadgeNew;
           }
           if (template.isSpecial) {
-            tag = R.imagesIcBadgeSpecial;
+            tag = R.assetsImagesIcBadgeSpecial;
             tagWidth = 42.0;
           }
           if (template.jigsawId.isNotEmpty && template.jigsawNum == 1) {
-            tag = R.imagesIcBadgeJigsaw;
+            tag = R.assetsImagesIcBadgeJigsaw;
           }
           if (template.tags.contains('wallpaper')) {
-            tag = R.imagesIcBadgeWallpaper;
+            tag = R.assetsImagesIcBadgeWallpaper;
           }
 
           return GestureDetector(
