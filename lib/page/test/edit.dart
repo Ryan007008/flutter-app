@@ -25,7 +25,10 @@ class CustomEditState extends State<CustomEdit> {
     Colors.brown,
     Colors.blue,
     Colors.deepPurple,
-    Colors.green
+    Colors.green,
+    Colors.pink,
+    Colors.amber,
+    Colors.cyan
   ];
 
   @override
@@ -38,6 +41,7 @@ class CustomEditState extends State<CustomEdit> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('编辑关卡'),
         centerTitle: true,
@@ -45,6 +49,22 @@ class CustomEditState extends State<CustomEdit> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Container(
+            width: 200,
+            height: 50,
+            child: TextField(
+              maxLines: 1,
+              textAlign: TextAlign.start,
+              decoration: InputDecoration(
+                hintText: '创建表格数',
+              ),
+              onChanged: (value) {
+                setState(() {
+                  lines = int.parse(value);
+                });
+              },
+            ),
+          ),
           Container(
             margin: const EdgeInsets.only(top: 50.0),
             child: Center(
@@ -67,7 +87,7 @@ class CustomEditState extends State<CustomEdit> {
                 },
                 child: CustomPaint(
                   size: Size(300, 300),
-                  painter: BasePainter(fillArea, selectedIndex),
+                  painter: BasePainter(fillArea, selectedIndex, lines, colors),
                 ),
               ),
             ),
@@ -111,7 +131,7 @@ class CustomEditState extends State<CustomEdit> {
         }
         file.createSync();
         var contents = '{\n' +
-            '  "lines": 5,\n' +
+            '  "lines": $lines,\n' +
             '  "number": [\n' +
             getAreaString() +
             '  ]' +
@@ -177,7 +197,7 @@ class CustomEditState extends State<CustomEdit> {
   }
 
   String getTargetArea(Offset location) {
-    final lineWidth = 300 / 5;
+    final lineWidth = 300 / lines;
     var x = (location.dx / lineWidth).floor();
     var y = (location.dy / lineWidth).floor();
     return '$x/$y';
@@ -186,17 +206,11 @@ class CustomEditState extends State<CustomEdit> {
 
 class BasePainter extends CustomPainter {
   final Map<int, List<String>> fillArea;
-  int lines = 5;
+  final int lines;
   final int selectedIndex;
-  List<MaterialColor> colors = [
-    Colors.red,
-    Colors.brown,
-    Colors.blue,
-    Colors.deepPurple,
-    Colors.green
-  ];
+  final List<MaterialColor> colors;
 
-  BasePainter(this.fillArea, this.selectedIndex);
+  BasePainter(this.fillArea, this.selectedIndex, this.lines, this.colors);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -216,13 +230,13 @@ class BasePainter extends CustomPainter {
             Offset(0, lineWidth * i), Offset(size.width, lineWidth * i), paint);
       }
     }
-    if (fillArea.length > 0 && fillArea.length <= lines) {
+    if (fillArea.length > 0) {
       fillArea.entries.forEach((element) {
         if (element.value.length > 0) {
           paint
             ..strokeWidth = size.width / lines / 3
             ..strokeCap = StrokeCap.round
-            ..color = Colors.amber;
+            ..color = Colors.black26;
           var offsets =
               element.value.map((e) => formatCoordinate(e, size)).toList();
           var path = Path()..addPolygon(offsets, false);
