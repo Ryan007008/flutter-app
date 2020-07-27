@@ -411,7 +411,7 @@ class MyPainter extends CustomPainter {
           paint
             ..color = fill.contains(area)
                 ? Colors.transparent
-                : Color.fromARGB(200, 255, 255, 25512);
+                : Color.fromARGB(200, 255, 255, 255);
           canvas.drawRect(
               Rect.fromCenter(
                   center: Offset(cX, cY),

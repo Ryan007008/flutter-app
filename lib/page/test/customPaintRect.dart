@@ -9,9 +9,9 @@ import 'package:path_provider/path_provider.dart';
 
 class CustomRouteRect extends StatefulWidget {
   final String name;
-  final String fileName;
+  final int id;
 
-  CustomRouteRect(this.name, this.fileName);
+  CustomRouteRect(this.name, this.id);
 
   @override
   State<StatefulWidget> createState() {
@@ -37,12 +37,11 @@ class CustomRouteRectState extends State<CustomRouteRect> {
     super.initState();
     boxWidth =
         (window.physicalSize.width / window.devicePixelRatio).floor() - 20.0;
-    var num = int.parse(widget.fileName.split('').last);
-    if (num > 4) {
-      getLocalFile(num);
+    if (widget.id > 15) {
+      getLocalFile(widget.id);
     } else {
       DefaultAssetBundle.of(context)
-          .loadString('assets/data/${widget.fileName}.json')
+          .loadString('assets/data/testData${widget.id}.json')
           .then((value) {
         var json = jsonDecode(value);
         setState(() {

@@ -87,7 +87,7 @@ class ListState extends State<ListPage> {
                     leading: Text('${item['area']} x ${item['area']}'),
                     onTap: () => Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                      return CustomRouteRect(item['title'], item['fileName']);
+                      return CustomRouteRect(item['title'], item['id']);
                     })),
                   );
                 }),
